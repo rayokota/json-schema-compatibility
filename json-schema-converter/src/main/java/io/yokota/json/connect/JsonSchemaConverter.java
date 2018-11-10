@@ -206,7 +206,7 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
 
     private JsonPointer schemaIdPointer = JsonPointer.compile(JsonSchemaConverterConfig.SCHEMA_ID_FIELD_DEFAULT);
     private int cacheSize = JsonSchemaConverterConfig.SCHEMAS_CACHE_SIZE_DEFAULT;
-    private Cache<ParsedSchemaWithVersion, Schema> toConnectSchemaCache;
+    private Cache<ParsedSchema, Schema> toConnectSchemaCache;
     private boolean isKey;
     private final JsonSerializer serializer = new JsonSerializer();
     private final JsonDeserializer deserializer = new JsonDeserializer();
@@ -303,7 +303,7 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
             return null;
 
         if (version != null) {
-            Schema cached = toConnectSchemaCache.get(new ParsedSchemaWithVersion(schema, version));
+            Schema cached = toConnectSchemaCache.get(new JsonSchema(((JsonSchema)schema).schemaObj, version));
             if (cached != null) {
                 return cached;
             }
@@ -379,7 +379,7 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
 
         Schema result = builder.build();
         if (version != null) {
-            toConnectSchemaCache.put(new ParsedSchemaWithVersion(new JsonSchema(jsonSchema), version), result);
+            toConnectSchemaCache.put(new JsonSchema(new JsonSchema(jsonSchema).schemaObj, version), result);
         }
         return result;
     }
@@ -568,37 +568,5 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
 
     private interface LogicalTypeConverter {
         Object convert(Schema schema, Object value);
-    }
-
-    private static class ParsedSchemaWithVersion {
-        private ParsedSchema schema;
-        private Integer version;
-
-        public ParsedSchemaWithVersion(ParsedSchema schema, Integer version) {
-            this.schema = schema;
-            this.version = version;
-        }
-
-        public ParsedSchema schema() {
-            return schema;
-        }
-
-        public Integer version() {
-            return version;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ParsedSchemaWithVersion that = (ParsedSchemaWithVersion) o;
-            return Objects.equals(schema, that.schema) &&
-                Objects.equals(version, that.version);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(schema, version);
-        }
     }
 }

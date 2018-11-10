@@ -33,12 +33,23 @@ public class JsonSchema implements ParsedSchema {
 
     public final Schema schemaObj;
 
+    private final Integer version;
+
     public JsonSchema(Schema schemaObj) {
+        this(schemaObj, null);
+    }
+
+    public JsonSchema(Schema schemaObj, Integer version) {
         this.schemaObj = schemaObj;
+        this.version = version;
     }
 
     public JsonSchema(String schemaString) {
         this(SchemaLoader.load(JsonValue.of(JsonSchemaUtil.stringToNode(schemaString))));
+    }
+
+    public JsonSchema(String schemaString, Integer version) {
+        this(SchemaLoader.load(JsonValue.of(JsonSchemaUtil.stringToNode(schemaString))), version);
     }
 
     @Override
@@ -49,6 +60,12 @@ public class JsonSchema implements ParsedSchema {
     @Override
     public String canonicalString() {
         return schemaObj.toString();
+    }
+
+
+    @Override
+    public Integer version() {
+        return version;
     }
 
     @Override
@@ -69,12 +86,13 @@ public class JsonSchema implements ParsedSchema {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JsonSchema that = (JsonSchema) o;
-        return Objects.equals(schemaObj, that.schemaObj);
+        return Objects.equals(schemaObj, that.schemaObj) &&
+            Objects.equals(version, that.version);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(schemaObj);
+        return Objects.hash(schemaObj, version);
     }
 
     @Override
