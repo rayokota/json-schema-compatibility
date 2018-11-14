@@ -40,7 +40,7 @@ public class SchemaDiffTest {
                     .collect(toList());
             final String description = (String) testCase.get("description");
 
-            assertThat(description, SchemaDiff.findDifferences(original, update).stream()
+            assertThat(description, SchemaDiff.compare(original, update).stream()
                     .map(change -> change.getType().toString() + " " + change.getJsonPath())
                     .collect(toList()), is(errorMessages));
         }
@@ -52,7 +52,7 @@ public class SchemaDiffTest {
                 readFile("recursive-schema.json"))));
         final Schema newOne = SchemaLoader.load(JsonValue.of(JsonSchemaUtil.stringToNode(
                 readFile("recursive-schema.json"))));
-        Assert.assertTrue(SchemaDiff.findDifferences(original, newOne).isEmpty());
+        Assert.assertTrue(SchemaDiff.compare(original, newOne).isEmpty());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class SchemaDiffTest {
         final Schema first = SchemaLoader.load(JsonValue.of(JsonSchemaUtil.stringToNode("{}")));
 
         final Schema second = SchemaLoader.load(JsonValue.of(JsonSchemaUtil.stringToNode(("{\"properties\": {}}"))));
-        final List<Difference> changes = SchemaDiff.findDifferences(first, second);
+        final List<Difference> changes = SchemaDiff.compare(first, second);
         Assert.assertTrue(changes.isEmpty());
     }
 

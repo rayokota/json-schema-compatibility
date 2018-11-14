@@ -22,12 +22,8 @@ import io.yokota.json.diff.Difference;
 import io.yokota.json.diff.SchemaDiff;
 import org.everit.json.schema.Schema;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-
-import static io.yokota.json.diff.Difference.Type.*;
 
 /**
  * A {@link SchemaValidationStrategy} that checks that the {@link Schema} to
@@ -62,7 +58,7 @@ class ValidateMutualRead implements SchemaValidationStrategy {
     static void canRead(Schema writtenWith, Schema readUsing)
         throws SchemaValidationException {
 
-        final List<Difference> differences = SchemaDiff.findDifferences(writtenWith, readUsing);
+        final List<Difference> differences = SchemaDiff.compare(writtenWith, readUsing);
 
         final String errorMessage = differences.stream()
             .filter(diff -> !SchemaDiff.COMPATIBLE_CHANGES.contains(diff.getType()))

@@ -77,7 +77,7 @@ public class SchemaDiff {
         COMPATIBLE_CHANGES = Collections.unmodifiableSet(changes);
     }
 
-    public static List<Difference> findDifferences(final Schema original, final Schema update) {
+    public static List<Difference> compare(final Schema original, final Schema update) {
         final Context ctx = new Context(COMPATIBLE_CHANGES);
         compare(ctx, original, update);
         return ctx.getDifferences();
