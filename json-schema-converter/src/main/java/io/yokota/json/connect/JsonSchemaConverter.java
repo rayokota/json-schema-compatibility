@@ -291,14 +291,14 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
     }
 
     public Schema asConnectSchema(ParsedSchema jsonSchema) {
-        return asConnectSchema(jsonSchema, null, true, null);
+        return asConnectSchema(jsonSchema, true, null);
     }
 
     public Schema asConnectSchema(ParsedSchema jsonSchema, Integer version) {
-        return asConnectSchema(jsonSchema, null, true, version);
+        return asConnectSchema(jsonSchema, true, version);
     }
 
-    public Schema asConnectSchema(ParsedSchema schema, String fieldName, Boolean required, Integer version) {
+    public Schema asConnectSchema(ParsedSchema schema, Boolean required, Integer version) {
         if (schema == null)
             return null;
 
@@ -330,7 +330,7 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
             org.everit.json.schema.Schema itemsSchema = arraySchema.getAllItemSchema();
 
             if (itemsSchema == null) {
-                throw new DataException(fieldName + " array schema did not specify the items type");
+                throw new DataException("Array schema did not specify the items type");
             }
 
             builder = SchemaBuilder.array(asConnectSchema(new JsonSchema(itemsSchema)));
@@ -344,18 +344,13 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
                 String subFieldName = property.getKey();
                 org.everit.json.schema.Schema subSchema = property.getValue();
                 Boolean subFieldRequired = requiredFields.contains(subFieldName);
-                builder.field(subFieldName,
-                    asConnectSchema(new JsonSchema(subSchema), subFieldName, subFieldRequired, null));
+                builder.field(subFieldName, asConnectSchema(new JsonSchema(subSchema), subFieldRequired, null));
             }
         } else if (jsonSchema instanceof ReferenceSchema) {
             ReferenceSchema refSchema = (ReferenceSchema) jsonSchema;
-            return asConnectSchema(new JsonSchema(refSchema.getReferredSchema()), fieldName, required, version);
+            return asConnectSchema(new JsonSchema(refSchema.getReferredSchema()), required, version);
         } else {
             throw new DataException("Unsupported schema type " + jsonSchema.getClass().getName());
-        }
-
-        if (fieldName != null) {
-            builder.name(fieldName);
         }
 
         if (version != null) {
