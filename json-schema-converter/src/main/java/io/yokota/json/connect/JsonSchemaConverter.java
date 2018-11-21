@@ -271,7 +271,7 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
                 String subject = getSubjectName(topic, isKey, null, null);
                 ParsedSchema parsedSchema = schemaRegistry.getBySubjectAndId(subject, id);
                 Integer version = schemaRegistry.getVersion(subject, parsedSchema);
-                schema = asConnectSchema(parsedSchema, version);
+                schema = asConnectSchema(((JsonSchema) parsedSchema).schemaObj, version);
             }
             return new SchemaAndValue(schema, convertToConnect(schema, jsonValue));
         } catch (IOException | RuntimeException e) {
@@ -290,26 +290,24 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
         }
     }
 
-    public Schema asConnectSchema(ParsedSchema jsonSchema) {
-        return asConnectSchema(jsonSchema, true, null);
+    public Schema asConnectSchema(org.everit.json.schema.Schema jsonSchema) {
+        return asConnectSchema(jsonSchema, null, true);
     }
 
-    public Schema asConnectSchema(ParsedSchema jsonSchema, Integer version) {
-        return asConnectSchema(jsonSchema, true, version);
+    public Schema asConnectSchema(org.everit.json.schema.Schema jsonSchema, Integer version) {
+        return asConnectSchema(jsonSchema, version, true);
     }
 
-    public Schema asConnectSchema(ParsedSchema schema, Boolean required, Integer version) {
-        if (schema == null)
+    public Schema asConnectSchema(org.everit.json.schema.Schema jsonSchema, Integer version, Boolean required) {
+        if (jsonSchema == null)
             return null;
 
         if (version != null) {
-            Schema cached = toConnectSchemaCache.get(new JsonSchema(((JsonSchema)schema).schemaObj, version));
+            Schema cached = toConnectSchemaCache.get(new JsonSchema(jsonSchema, version));
             if (cached != null) {
                 return cached;
             }
         }
-
-        org.everit.json.schema.Schema jsonSchema = ((JsonSchema) schema).schemaObj;
 
         final SchemaBuilder builder;
         if (jsonSchema instanceof BooleanSchema) {
@@ -333,7 +331,7 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
                 throw new DataException("Array schema did not specify the items type");
             }
 
-            builder = SchemaBuilder.array(asConnectSchema(new JsonSchema(itemsSchema)));
+            builder = SchemaBuilder.array(asConnectSchema(itemsSchema));
         } else if (jsonSchema instanceof ObjectSchema) {
             ObjectSchema objectSchema = (ObjectSchema) jsonSchema;
             builder = SchemaBuilder.struct();
@@ -344,11 +342,11 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
                 String subFieldName = property.getKey();
                 org.everit.json.schema.Schema subSchema = property.getValue();
                 Boolean subFieldRequired = requiredFields.contains(subFieldName);
-                builder.field(subFieldName, asConnectSchema(new JsonSchema(subSchema), subFieldRequired, null));
+                builder.field(subFieldName, asConnectSchema(subSchema, null, subFieldRequired));
             }
         } else if (jsonSchema instanceof ReferenceSchema) {
             ReferenceSchema refSchema = (ReferenceSchema) jsonSchema;
-            return asConnectSchema(new JsonSchema(refSchema.getReferredSchema()), required, version);
+            return asConnectSchema(refSchema.getReferredSchema(), version, required);
         } else {
             throw new DataException("Unsupported schema type " + jsonSchema.getClass().getName());
         }
@@ -374,7 +372,7 @@ public class JsonSchemaConverter extends AbstractKafkaSchemaSerDe implements Con
 
         Schema result = builder.build();
         if (version != null) {
-            toConnectSchemaCache.put(new JsonSchema(new JsonSchema(jsonSchema).schemaObj, version), result);
+            toConnectSchemaCache.put(new JsonSchema(jsonSchema, version), result);
         }
         return result;
     }
