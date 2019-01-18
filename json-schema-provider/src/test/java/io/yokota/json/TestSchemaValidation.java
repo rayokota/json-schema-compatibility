@@ -58,7 +58,6 @@ import static io.yokota.json.TestSchemas.STRING_INT_UNION_SCHEMA;
 import static io.yokota.json.TestSchemas.STRING_SCHEMA;
 import static io.yokota.json.TestSchemas.STRING_UNION_SCHEMA;
 import static io.yokota.json.TestSchemas.list;
-import static org.junit.Assert.fail;
 
 public class TestSchemaValidation {
 

@@ -8,7 +8,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import static io.yokota.json.diff.Difference.Type.*;
+import static io.yokota.json.diff.Difference.Type.ADDITIONAL_ITEMS_ADDED;
+import static io.yokota.json.diff.Difference.Type.ADDITIONAL_ITEMS_EXTENDED;
+import static io.yokota.json.diff.Difference.Type.ADDITIONAL_ITEMS_NARROWED;
+import static io.yokota.json.diff.Difference.Type.ADDITIONAL_ITEMS_REMOVED;
+import static io.yokota.json.diff.Difference.Type.ITEMS_ADDED_TO_CLOSED_CONTENT_MODEL;
+import static io.yokota.json.diff.Difference.Type.ITEMS_ADDED_TO_OPEN_CONTENT_MODEL;
+import static io.yokota.json.diff.Difference.Type.ITEMS_REMOVED_FROM_CLOSED_CONTENT_MODEL;
+import static io.yokota.json.diff.Difference.Type.ITEMS_REMOVED_FROM_OPEN_CONTENT_MODEL;
+import static io.yokota.json.diff.Difference.Type.MAX_ITEMS_ADDED;
+import static io.yokota.json.diff.Difference.Type.MAX_ITEMS_DECREASED;
+import static io.yokota.json.diff.Difference.Type.MAX_ITEMS_INCREASED;
+import static io.yokota.json.diff.Difference.Type.MAX_ITEMS_REMOVED;
+import static io.yokota.json.diff.Difference.Type.MIN_ITEMS_ADDED;
+import static io.yokota.json.diff.Difference.Type.MIN_ITEMS_DECREASED;
+import static io.yokota.json.diff.Difference.Type.MIN_ITEMS_INCREASED;
+import static io.yokota.json.diff.Difference.Type.MIN_ITEMS_REMOVED;
+import static io.yokota.json.diff.Difference.Type.UNIQUE_ITEMS_ADDED;
+import static io.yokota.json.diff.Difference.Type.UNIQUE_ITEMS_REMOVED;
 
 public class ArraySchemaDiff {
     static void compare(final Context ctx, final ArraySchema original, final ArraySchema update) {

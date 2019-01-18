@@ -16,7 +16,6 @@
 
 package io.yokota.json.registry;
 
-import io.confluent.kafka.schemaregistry.CompatibilityLevel;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.yokota.json.diff.Difference;
 import io.yokota.json.diff.SchemaDiff;
@@ -81,10 +80,7 @@ public class JsonSchema implements ParsedSchema {
             .filter(diff -> !SchemaDiff.COMPATIBLE_CHANGES.contains(diff.getType()))
             .map(JsonSchema::formatErrorMessage)
             .collect(Collectors.joining(", "));
-        if (errorMessage != null && errorMessage.length() > 0) {
-            return false;
-        }
-        return true;
+        return errorMessage == null || errorMessage.length() <= 0;
     }
 
     static private String formatErrorMessage(final Difference difference) {

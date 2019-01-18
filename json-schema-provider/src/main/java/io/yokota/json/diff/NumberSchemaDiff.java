@@ -4,7 +4,29 @@ import org.everit.json.schema.NumberSchema;
 
 import java.util.Objects;
 
-import static io.yokota.json.diff.Difference.Type.*;
+import static io.yokota.json.diff.Difference.Type.EXCLUSIVE_MAXIMUM_ADDED;
+import static io.yokota.json.diff.Difference.Type.EXCLUSIVE_MAXIMUM_DECREASED;
+import static io.yokota.json.diff.Difference.Type.EXCLUSIVE_MAXIMUM_INCREASED;
+import static io.yokota.json.diff.Difference.Type.EXCLUSIVE_MAXIMUM_REMOVED;
+import static io.yokota.json.diff.Difference.Type.EXCLUSIVE_MINIMUM_ADDED;
+import static io.yokota.json.diff.Difference.Type.EXCLUSIVE_MINIMUM_DECREASED;
+import static io.yokota.json.diff.Difference.Type.EXCLUSIVE_MINIMUM_INCREASED;
+import static io.yokota.json.diff.Difference.Type.EXCLUSIVE_MINIMUM_REMOVED;
+import static io.yokota.json.diff.Difference.Type.MAXIMUM_ADDED;
+import static io.yokota.json.diff.Difference.Type.MAXIMUM_DECREASED;
+import static io.yokota.json.diff.Difference.Type.MAXIMUM_INCREASED;
+import static io.yokota.json.diff.Difference.Type.MAXIMUM_REMOVED;
+import static io.yokota.json.diff.Difference.Type.MINIMUM_ADDED;
+import static io.yokota.json.diff.Difference.Type.MINIMUM_DECREASED;
+import static io.yokota.json.diff.Difference.Type.MINIMUM_INCREASED;
+import static io.yokota.json.diff.Difference.Type.MINIMUM_REMOVED;
+import static io.yokota.json.diff.Difference.Type.MULTIPLE_OF_ADDED;
+import static io.yokota.json.diff.Difference.Type.MULTIPLE_OF_CHANGED;
+import static io.yokota.json.diff.Difference.Type.MULTIPLE_OF_EXPANDED;
+import static io.yokota.json.diff.Difference.Type.MULTIPLE_OF_REDUCED;
+import static io.yokota.json.diff.Difference.Type.MULTIPLE_OF_REMOVED;
+import static io.yokota.json.diff.Difference.Type.TYPE_EXTENDED;
+import static io.yokota.json.diff.Difference.Type.TYPE_NARROWED;
 
 class NumberSchemaDiff {
     static void compare(final Context ctx, final NumberSchema original, final NumberSchema update) {

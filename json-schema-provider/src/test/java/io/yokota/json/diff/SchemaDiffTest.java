@@ -24,7 +24,7 @@ public class SchemaDiffTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void checkJsonSchemaCompatibility() throws Exception {
+    public void checkJsonSchemaCompatibility() {
         final JsonArray testCases = (JsonArray) JsonValue.of(JsonSchemaUtil.stringToNode(
                 readFile("diff-schema-examples.json")));
 
@@ -47,7 +47,7 @@ public class SchemaDiffTest {
     }
 
     @Test
-    public void testRecursiveCheck() throws IOException {
+    public void testRecursiveCheck() {
         final Schema original = SchemaLoader.load(JsonValue.of(JsonSchemaUtil.stringToNode(
                 readFile("recursive-schema.json"))));
         final Schema newOne = SchemaLoader.load(JsonValue.of(JsonSchemaUtil.stringToNode(

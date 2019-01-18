@@ -6,7 +6,34 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import static io.yokota.json.diff.Difference.Type.*;
+import static io.yokota.json.diff.Difference.Type.ADDITIONAL_PROPERTIES_ADDED;
+import static io.yokota.json.diff.Difference.Type.ADDITIONAL_PROPERTIES_EXTENDED;
+import static io.yokota.json.diff.Difference.Type.ADDITIONAL_PROPERTIES_NARROWED;
+import static io.yokota.json.diff.Difference.Type.ADDITIONAL_PROPERTIES_REMOVED;
+import static io.yokota.json.diff.Difference.Type.DEPENDENCY_ARRAY_ADDED;
+import static io.yokota.json.diff.Difference.Type.DEPENDENCY_ARRAY_CHANGED;
+import static io.yokota.json.diff.Difference.Type.DEPENDENCY_ARRAY_EXTENDED;
+import static io.yokota.json.diff.Difference.Type.DEPENDENCY_ARRAY_NARROWED;
+import static io.yokota.json.diff.Difference.Type.DEPENDENCY_ARRAY_REMOVED;
+import static io.yokota.json.diff.Difference.Type.DEPENDENCY_SCHEMA_ADDED;
+import static io.yokota.json.diff.Difference.Type.DEPENDENCY_SCHEMA_REMOVED;
+import static io.yokota.json.diff.Difference.Type.MAX_PROPERTIES_ADDED;
+import static io.yokota.json.diff.Difference.Type.MAX_PROPERTIES_DECREASED;
+import static io.yokota.json.diff.Difference.Type.MAX_PROPERTIES_INCREASED;
+import static io.yokota.json.diff.Difference.Type.MAX_PROPERTIES_REMOVED;
+import static io.yokota.json.diff.Difference.Type.MIN_PROPERTIES_ADDED;
+import static io.yokota.json.diff.Difference.Type.MIN_PROPERTIES_DECREASED;
+import static io.yokota.json.diff.Difference.Type.MIN_PROPERTIES_INCREASED;
+import static io.yokota.json.diff.Difference.Type.MIN_PROPERTIES_REMOVED;
+import static io.yokota.json.diff.Difference.Type.OPTIONAL_PROPERTY_ADDED_TO_CLOSED_CONTENT_MODEL;
+import static io.yokota.json.diff.Difference.Type.PROPERTY_ADDED_TO_OPEN_CONTENT_MODEL;
+import static io.yokota.json.diff.Difference.Type.PROPERTY_REMOVED_FROM_CLOSED_CONTENT_MODEL;
+import static io.yokota.json.diff.Difference.Type.PROPERTY_REMOVED_FROM_OPEN_CONTENT_MODEL;
+import static io.yokota.json.diff.Difference.Type.REQUIRED_ATTRIBUTE_ADDED;
+import static io.yokota.json.diff.Difference.Type.REQUIRED_ATTRIBUTE_REMOVED;
+import static io.yokota.json.diff.Difference.Type.REQUIRED_ATTRIBUTE_WITH_DEFAULT_ADDED;
+import static io.yokota.json.diff.Difference.Type.REQUIRED_PROPERTY_ADDED_TO_CLOSED_CONTENT_MODEL;
+import static io.yokota.json.diff.Difference.Type.REQUIRED_PROPERTY_WITH_DEFAULT_ADDED_TO_CLOSED_CONTENT_MODEL;
 
 public class ObjectSchemaDiff {
     static void compare(final Context ctx, final ObjectSchema original, final ObjectSchema update) {

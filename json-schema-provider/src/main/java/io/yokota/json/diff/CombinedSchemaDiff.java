@@ -5,7 +5,11 @@ import org.everit.json.schema.Schema;
 
 import java.util.Iterator;
 
-import static io.yokota.json.diff.Difference.Type.*;
+import static io.yokota.json.diff.Difference.Type.COMPOSITION_METHOD_CHANGED;
+import static io.yokota.json.diff.Difference.Type.PRODUCT_TYPE_EXTENDED;
+import static io.yokota.json.diff.Difference.Type.PRODUCT_TYPE_NARROWED;
+import static io.yokota.json.diff.Difference.Type.SUM_TYPE_EXTENDED;
+import static io.yokota.json.diff.Difference.Type.SUM_TYPE_NARROWED;
 
 class CombinedSchemaDiff {
     static void compare(final Context ctx, final CombinedSchema original, final CombinedSchema update) {

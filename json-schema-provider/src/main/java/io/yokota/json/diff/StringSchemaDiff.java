@@ -4,7 +4,17 @@ import org.everit.json.schema.StringSchema;
 
 import java.util.Objects;
 
-import static io.yokota.json.diff.Difference.Type.*;
+import static io.yokota.json.diff.Difference.Type.MAX_LENGTH_ADDED;
+import static io.yokota.json.diff.Difference.Type.MAX_LENGTH_DECREASED;
+import static io.yokota.json.diff.Difference.Type.MAX_LENGTH_INCREASED;
+import static io.yokota.json.diff.Difference.Type.MAX_LENGTH_REMOVED;
+import static io.yokota.json.diff.Difference.Type.MIN_LENGTH_ADDED;
+import static io.yokota.json.diff.Difference.Type.MIN_LENGTH_DECREASED;
+import static io.yokota.json.diff.Difference.Type.MIN_LENGTH_INCREASED;
+import static io.yokota.json.diff.Difference.Type.MIN_LENGTH_REMOVED;
+import static io.yokota.json.diff.Difference.Type.PATTERN_ADDED;
+import static io.yokota.json.diff.Difference.Type.PATTERN_CHANGED;
+import static io.yokota.json.diff.Difference.Type.PATTERN_REMOVED;
 
 class StringSchemaDiff {
     static void compare(final Context ctx, final StringSchema original, final StringSchema update) {

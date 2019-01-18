@@ -76,7 +76,7 @@ public class JsonSchemaConverterTest {
     }
 
     @Test
-    public void testComplex() throws Exception {
+    public void testComplex() {
         /*
         JsonObject rawSchemaJson = loader.readObj("/objectschema.json");
         org.everit.json.schema.Schema original = SchemaLoader.load(rawSchemaJson);
