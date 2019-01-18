@@ -75,7 +75,6 @@ public class JsonSchema implements ParsedSchema {
             return false;
         }
         final List<Difference> differences = SchemaDiff.compare(((JsonSchema) previousSchema).schemaObj, schemaObj);
-
         long count = differences.stream()
             .filter(diff -> !SchemaDiff.COMPATIBLE_CHANGES.contains(diff.getType()))
             .count();
