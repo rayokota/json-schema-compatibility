@@ -18,7 +18,10 @@
 package io.yokota.json;
 
 
+import io.confluent.kafka.schemaregistry.SchemaValidator;
+import io.confluent.kafka.schemaregistry.SchemaValidatorBuilder;
 import io.yokota.json.TestSchemas.ReaderWriter;
+import io.yokota.json.registry.JsonSchema;
 import org.everit.json.schema.ArraySchema;
 import org.everit.json.schema.BooleanSchema;
 import org.everit.json.schema.CombinedSchema;
@@ -132,7 +135,7 @@ public class TestSchemaValidation {
         .build();
 
     @Test
-    public void testAllTypes() throws SchemaValidationException {
+    public void testAllTypes() {
         Schema s = ObjectSchema.builder()
             .addPropertySchema("boolF", BooleanSchema.builder().build())
             .addRequiredProperty("boolF")
@@ -154,37 +157,31 @@ public class TestSchemaValidation {
     }
 
     @Test
-    public void testReadOnePrior() throws SchemaValidationException {
+    public void testReadOnePrior() {
         testValidatorPasses(builder.canReadStrategy().validateLatest(), rec3, rec);
         testValidatorFails(builder.canReadStrategy().validateLatest(), rec4, rec);
     }
 
     @Test
-    public void testReadAllPrior() throws SchemaValidationException {
+    public void testReadAllPrior() {
         testValidatorPasses(builder.canReadStrategy().validateAll(), rec3, rec, rec2);
         testValidatorFails(builder.canReadStrategy().validateAll(), rec4, rec, rec2, rec3);
     }
 
     @Test
-    public void testOnePriorCanRead() throws SchemaValidationException {
+    public void testOnePriorCanRead() {
         testValidatorPasses(builder.canBeReadStrategy().validateLatest(), rec, rec3);
         testValidatorFails(builder.canBeReadStrategy().validateLatest(), rec, rec4);
     }
 
     @Test
-    public void testAllPriorCanRead() throws SchemaValidationException {
+    public void testAllPriorCanRead() {
         testValidatorPasses(builder.canBeReadStrategy().validateAll(), rec, rec3, rec2);
         testValidatorFails(builder.canBeReadStrategy().validateAll(), rec, rec4, rec3, rec2);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testInvalidBuild() {
-        builder.strategy(null).validateAll();
-    }
-
-
     @Test
-    public void testUnionWithIncompatibleElements() throws SchemaValidationException {
+    public void testUnionWithIncompatibleElements() {
         Schema union1 = CombinedSchema.builder().criterion(CombinedSchema.ONE_CRITERION)
             .subschema(ArraySchema.builder().allItemSchema(rec).build())
             .build();
@@ -196,7 +193,7 @@ public class TestSchemaValidation {
     }
 
     @Test
-    public void testUnionWithCompatibleElements() throws SchemaValidationException {
+    public void testUnionWithCompatibleElements() {
         Schema union1 = CombinedSchema.builder().criterion(CombinedSchema.ONE_CRITERION)
             .subschema(ArraySchema.builder().allItemSchema(rec).build())
             .build();
@@ -208,8 +205,7 @@ public class TestSchemaValidation {
     }
 
     @Test
-    public void testSchemaCompatibilitySuccesses()
-        throws SchemaValidationException {
+    public void testSchemaCompatibilitySuccesses() {
         for (ReaderWriter tc : COMPATIBLE_READER_WRITER_TEST_CASES) {
             testValidatorPasses(builder.canReadStrategy().validateAll(), tc.getReader(), tc.getWriter());
         }
@@ -220,39 +216,26 @@ public class TestSchemaValidation {
         for (ReaderWriter tc : INCOMPATIBLE_READER_WRITER_TEST_CASES) {
             Schema reader = tc.getReader();
             Schema writer = tc.getWriter();
-            try {
-                SchemaValidator validator = builder.canReadStrategy().validateAll();
-                validator.validate(reader, Collections.singleton(writer));
-            } catch (SchemaValidationException e) {
-                continue;
-            }
-            fail("Expected test to throw SchemaValidationException: reader " +
-                reader + ", writer " + writer);
+            SchemaValidator validator = builder.canReadStrategy().validateAll();
+            boolean valid = validator.validate(new JsonSchema(reader), Collections.singleton(new JsonSchema(writer)));
+            Assert.assertFalse(valid);
         }
     }
 
-    private void testValidatorPasses(SchemaValidator validator,
-                                     Schema schema, Schema... prev) throws SchemaValidationException {
-        ArrayList<Schema> prior = new ArrayList<>();
+    private void testValidatorPasses(SchemaValidator validator, Schema schema, Schema... prev) {
+        ArrayList<JsonSchema> prior = new ArrayList<>();
         for (int i = prev.length - 1; i >= 0; i--) {
-            prior.add(prev[i]);
+            prior.add(new JsonSchema(prev[i]));
         }
-        validator.validate(schema, prior);
+        validator.validate(new JsonSchema(schema), prior);
     }
 
-    private void testValidatorFails(SchemaValidator validator,
-                                    Schema schemaFails, Schema... prev) throws SchemaValidationException {
-        ArrayList<Schema> prior = new ArrayList<>();
+    private void testValidatorFails(SchemaValidator validator, Schema schemaFails, Schema... prev) {
+        ArrayList<JsonSchema> prior = new ArrayList<>();
         for (int i = prev.length - 1; i >= 0; i--) {
-            prior.add(prev[i]);
+            prior.add(new JsonSchema(prev[i]));
         }
-        boolean threw = false;
-        try {
-            // should fail
-            validator.validate(schemaFails, prior);
-        } catch (SchemaValidationException sve) {
-            threw = true;
-        }
-        Assert.assertTrue(threw);
+        boolean valid = validator.validate(new JsonSchema(schemaFails), prior);
+        Assert.assertFalse(valid);
     }
 }

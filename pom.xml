@@ -30,7 +30,6 @@
     </scm>
 
     <modules>
-        <module>json-schema-compatibility</module>
         <module>json-schema-converter</module>
         <module>json-schema-provider</module>
     </modules>

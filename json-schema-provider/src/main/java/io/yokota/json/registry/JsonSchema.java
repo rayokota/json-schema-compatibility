@@ -18,6 +18,8 @@ package io.yokota.json.registry;
 
 import io.confluent.kafka.schemaregistry.CompatibilityLevel;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
+import io.yokota.json.diff.Difference;
+import io.yokota.json.diff.SchemaDiff;
 import org.everit.json.schema.JsonSchemaUtil;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.JsonValue;
@@ -69,16 +71,24 @@ public class JsonSchema implements ParsedSchema {
     }
 
     @Override
-    public boolean isCompatible(CompatibilityLevel level, List<ParsedSchema> previousSchemas) {
-        for (ParsedSchema previousSchema : previousSchemas) {
-            if (!(previousSchema instanceof JsonSchema)) {
-                return false;
-            }
+    public boolean isBackwardCompatible(ParsedSchema previousSchema) {
+        if (!schemaType().equals(previousSchema.schemaType())) {
+            return false;
         }
-        return JsonCompatibilityChecker.checker(level).isCompatible(
-            schemaObj,
-            previousSchemas.stream().map(o -> ((JsonSchema) o).schemaObj).collect(Collectors.toList())
-        );
+        final List<Difference> differences = SchemaDiff.compare(((JsonSchema) previousSchema).schemaObj, schemaObj);
+
+        final String errorMessage = differences.stream()
+            .filter(diff -> !SchemaDiff.COMPATIBLE_CHANGES.contains(diff.getType()))
+            .map(JsonSchema::formatErrorMessage)
+            .collect(Collectors.joining(", "));
+        if (errorMessage != null && errorMessage.length() > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    static private String formatErrorMessage(final Difference difference) {
+        return difference.getJsonPath() + ": " + difference.getType();
     }
 
     @Override
