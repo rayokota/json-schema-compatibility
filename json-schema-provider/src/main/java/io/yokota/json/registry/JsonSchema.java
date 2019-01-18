@@ -76,15 +76,10 @@ public class JsonSchema implements ParsedSchema {
         }
         final List<Difference> differences = SchemaDiff.compare(((JsonSchema) previousSchema).schemaObj, schemaObj);
 
-        final String errorMessage = differences.stream()
+        long count = differences.stream()
             .filter(diff -> !SchemaDiff.COMPATIBLE_CHANGES.contains(diff.getType()))
-            .map(JsonSchema::formatErrorMessage)
-            .collect(Collectors.joining(", "));
-        return errorMessage == null || errorMessage.length() <= 0;
-    }
-
-    static private String formatErrorMessage(final Difference difference) {
-        return difference.getJsonPath() + ": " + difference.getType();
+            .count();
+        return count == 0;
     }
 
     @Override
