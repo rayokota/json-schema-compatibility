@@ -75,10 +75,10 @@ public class JsonSchema implements ParsedSchema {
             return false;
         }
         final List<Difference> differences = SchemaDiff.compare(((JsonSchema) previousSchema).schemaObj, schemaObj);
-        long count = differences.stream()
-            .filter(diff -> !SchemaDiff.COMPATIBLE_CHANGES.contains(diff.getType()))
-            .count();
-        return count == 0;
+        boolean notCompatible = differences.stream()
+            .map(Difference::getType)
+            .anyMatch(t -> !SchemaDiff.COMPATIBLE_CHANGES.contains(t));
+        return !notCompatible;
     }
 
     @Override
