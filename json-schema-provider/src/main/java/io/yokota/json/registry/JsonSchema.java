@@ -19,10 +19,9 @@ package io.yokota.json.registry;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.yokota.json.diff.Difference;
 import io.yokota.json.diff.SchemaDiff;
-import org.everit.json.schema.JsonSchemaUtil;
 import org.everit.json.schema.Schema;
-import org.everit.json.schema.loader.JsonValue;
 import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,11 +45,11 @@ public class JsonSchema implements ParsedSchema {
     }
 
     public JsonSchema(String schemaString) {
-        this(SchemaLoader.load(JsonValue.of(JsonSchemaUtil.stringToNode(schemaString))));
+        this(SchemaLoader.load(new JSONObject(schemaString)));
     }
 
     public JsonSchema(String schemaString, Integer version) {
-        this(SchemaLoader.load(JsonValue.of(JsonSchemaUtil.stringToNode(schemaString))), version);
+        this(SchemaLoader.load(new JSONObject(schemaString)), version);
     }
 
     @Override

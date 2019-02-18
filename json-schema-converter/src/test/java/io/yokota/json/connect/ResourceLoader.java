@@ -1,12 +1,9 @@
 package io.yokota.json.connect;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.everit.json.schema.JsonSchemaUtil;
-import org.everit.json.schema.loader.JsonObject;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.InputStream;
-import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
@@ -21,19 +18,9 @@ public class ResourceLoader {
         this.rootPath = requireNonNull(rootPath, "rootPath cannot be null");
     }
 
-    @SuppressWarnings("unchecked")
-    public JsonObject readObj(String relPath) {
+    public JSONObject readObj(String relPath) {
         InputStream stream = getStream(relPath);
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode value;
-		try {
-			value = (ObjectNode)objectMapper.readTree(stream);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		
-       	Map map = JsonSchemaUtil.objectNodeToMap(value);
-        return new JsonObject(map);
+        return new JSONObject(new JSONTokener(stream));
     }
 
     public InputStream getStream(String relPath) {
@@ -41,7 +28,7 @@ public class ResourceLoader {
         InputStream rval = getClass().getResourceAsStream(absPath);
         if (rval == null) {
             throw new IllegalArgumentException(
-                    format("failed to load resource by relPath [%s].\n"
+                format("failed to load resource by relPath [%s].\n"
                     + "InputStream by path [%s] is null", relPath, absPath));
         }
         return rval;

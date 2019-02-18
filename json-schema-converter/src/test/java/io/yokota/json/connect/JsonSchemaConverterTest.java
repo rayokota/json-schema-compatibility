@@ -28,8 +28,8 @@ import org.apache.kafka.connect.data.SchemaAndValue;
 import org.apache.kafka.connect.data.SchemaBuilder;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.json.JsonSerializer;
-import org.everit.json.schema.loader.JsonObject;
 import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -123,8 +123,8 @@ public class JsonSchemaConverterTest {
     }
 
     private void testVersionExtracted(String subject, JsonSerializer serializer, JsonSchemaConverter jsonConverter) throws IOException, RestClientException {
-        JsonObject rawSchemaJson1 = loader.readObj("key.json");
-        JsonObject rawSchemaJson2 = loader.readObj("keyvalue.json");
+        JSONObject rawSchemaJson1 = loader.readObj("key.json");
+        JSONObject rawSchemaJson2 = loader.readObj("keyvalue.json");
         org.everit.json.schema.Schema schema1 = SchemaLoader.load(rawSchemaJson1);
         org.everit.json.schema.Schema schema2 = SchemaLoader.load(rawSchemaJson2);
         schemaRegistry.register(subject, new JsonSchema(schema1));
@@ -169,9 +169,9 @@ public class JsonSchemaConverterTest {
     }
 
     private void assertSameSchemaMultipleTopic(JsonSchemaConverter converter, SchemaRegistryClient schemaRegistry, boolean isKey) throws IOException, RestClientException {
-        JsonObject rawSchemaJson1 = loader.readObj("key.json");
-        JsonObject rawSchemaJson2_1 = loader.readObj("keyvalue.json");
-        JsonObject rawSchemaJson2_2 = loader.readObj("keyvalue.json");
+        JSONObject rawSchemaJson1 = loader.readObj("key.json");
+        JSONObject rawSchemaJson2_1 = loader.readObj("keyvalue.json");
+        JSONObject rawSchemaJson2_2 = loader.readObj("keyvalue.json");
         org.everit.json.schema.Schema schema1 = SchemaLoader.load(rawSchemaJson1);
         org.everit.json.schema.Schema schema2_1 = SchemaLoader.load(rawSchemaJson2_1);
         org.everit.json.schema.Schema schema2_2 = SchemaLoader.load(rawSchemaJson2_2);

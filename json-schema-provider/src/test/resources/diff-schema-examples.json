@@ -143,7 +143,7 @@
       "type": "string",
       "enum": ["blue"]
     },
-    "errors": ["ENUM_ARRAY_CHANGED #/enum"]
+    "errors": ["ENUM_ARRAY_CHANGED #/allOf/0/enum"]
   },
   {
     "description": "Do not allow changes to type array",
