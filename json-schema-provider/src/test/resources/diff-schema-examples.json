@@ -136,14 +136,26 @@
   {
     "description": "Do not allow changes to enum schema",
     "original_schema": {
-      "type": "string",
-      "enum": ["red"]
+      "allOf": [
+        {
+          "type": "string"
+        },
+        {
+          "enum": ["red"]
+        }
+      ]
     },
     "update_schema": {
-      "type": "string",
-      "enum": ["blue"]
+      "allOf": [
+        {
+          "type": "string"
+        },
+        {
+          "enum": ["blue"]
+        }
+      ]
     },
-    "errors": ["ENUM_ARRAY_CHANGED #/allOf/0/enum"]
+    "errors": ["ENUM_ARRAY_CHANGED #/allOf/1/enum"]
   },
   {
     "description": "Do not allow changes to type array",
